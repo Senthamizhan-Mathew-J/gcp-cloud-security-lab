@@ -1,179 +1,130 @@
-For this Project Part1 I used These Commands To Configure the Role To the User's:
+# Commands Used
 
-````markdown
-# IAM Commands Used
+## Authentication
 
-## Check gcloud version
-
-```bash
-gcloud --version
-```
-
-Checks whether Google Cloud CLI is installed.
-
----
-
-## Authenticate account
+### Login to Google Cloud
 
 ```bash
 gcloud auth login
 ```
 
-Authenticates a Google Cloud user account.
+Authenticates a Google Cloud account.
 
----
-
-## Set default region
-
-```bash
-gcloud config set compute/region us-east1
-```
-
-Sets the default region for cloud resources.
-
----
-
-## Set default zone
-
-```bash
-gcloud config set compute/zone us-east1-b
-```
-
-Sets the default zone for resource deployment.
-
----
-
-## Create VM Instance
-
-```bash
-gcloud compute instances create lab-1 --zone us-east1-c --machine-type=e2-standard-2
-```
-
-Creates a Compute Engine virtual machine.
-
----
-
-## View current configuration
+### View Current Configuration
 
 ```bash
 gcloud config list
 ```
 
-Displays current gcloud settings and active account.
+Displays the active account, project, region, and zone.
 
 ---
 
-## List available zones
+## Compute Engine
+
+### Create Virtual Machine
 
 ```bash
-gcloud compute zones list
+gcloud compute instances create lab-1 \
+--zone us-east1-c \
+--machine-type=e2-standard-2
 ```
 
-Lists all available Google Cloud zones.
+Creates a Compute Engine virtual machine.
 
----
-
-## Create a new gcloud configuration
-
-```bash
-gcloud init --no-launch-browser
-```
-
-Creates and configures a new user profile.
-
----
-
-## Switch configuration
-
-```bash
-gcloud config configurations activate user2
-```
-
-Switches to another configured account.
-
----
-
-## List VM instances
+### List VM Instances
 
 ```bash
 gcloud compute instances list
 ```
 
-Displays all VM instances in the current project.
+Displays all virtual machines in the project.
+
+### Connect to VM
+
+```bash
+gcloud compute ssh lab-3 --zone us-east1-a
+```
+
+Connects to a VM using SSH.
 
 ---
 
-## View IAM roles
+## IAM Configuration
+
+### List IAM Roles
 
 ```bash
 gcloud iam roles list
 ```
 
-Lists available IAM roles.
+Displays available IAM roles.
 
----
-
-## Inspect IAM role permissions
+### View Role Permissions
 
 ```bash
 gcloud iam roles describe roles/compute.instanceAdmin
 ```
 
-Shows permissions assigned to a specific IAM role.
+Displays permissions assigned to a role.
 
----
-
-## Grant Viewer Role
+### Assign Viewer Role
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID --member user:USER_EMAIL --role=roles/viewer
+gcloud projects add-iam-policy-binding PROJECT_ID \
+--member=user:USER_EMAIL \
+--role=roles/viewer
 ```
 
-Assigns Viewer access to a user.
+Grants read-only access to a user.
 
----
-
-## Create Custom DevOps Role
+### Assign Editor Role
 
 ```bash
-gcloud iam roles create devops --project PROJECT_ID --permissions "PERMISSIONS"
+gcloud projects add-iam-policy-binding PROJECT_ID \
+--member=user:USER_EMAIL \
+--role=roles/editor
 ```
 
-Creates a custom IAM role with selected permissions.
+Grants create, modify, and delete permissions.
 
 ---
 
-## Grant Service Account User Role
+## Custom Role Management
+
+### Create Custom DevOps Role
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID --member user:USER_EMAIL --role=roles/iam.serviceAccountUser
+gcloud iam roles create devops \
+--project=PROJECT_ID \
+--permissions=PERMISSIONS
 ```
 
-Allows a user to use service accounts.
+Creates a custom DevOps role.
 
----
-
-## Assign Custom DevOps Role
+### Assign Custom Role
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID --member user:USER_EMAIL --role=projects/PROJECT_ID/roles/devops
+gcloud projects add-iam-policy-binding PROJECT_ID \
+--member=user:USER_EMAIL \
+--role=projects/PROJECT_ID/roles/devops
 ```
 
 Assigns the custom DevOps role to a user.
 
 ---
 
-## Create Service Account
+## Service Accounts
+
+### Create Service Account
 
 ```bash
-gcloud iam service-accounts create devops --display-name devops
+gcloud iam service-accounts create devops
 ```
 
-Creates a new service account.
+Creates a service account.
 
----
-
-## List Service Accounts
+### List Service Accounts
 
 ```bash
 gcloud iam service-accounts list
@@ -181,53 +132,47 @@ gcloud iam service-accounts list
 
 Displays available service accounts.
 
----
-
-## Assign Service Account User Role
+### Assign Service Account User Role
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID --member serviceAccount:SERVICE_ACCOUNT --role=roles/iam.serviceAccountUser
+gcloud projects add-iam-policy-binding PROJECT_ID \
+--member=user:USER_EMAIL \
+--role=roles/iam.serviceAccountUser
 ```
 
-Allows the service account to be used by resources.
+Allows a user to use service accounts.
 
----
-
-## Assign Compute Instance Admin Role
+### Grant Compute Admin Access
 
 ```bash
-gcloud projects add-iam-policy-binding PROJECT_ID --member serviceAccount:SERVICE_ACCOUNT --role=roles/compute.instanceAdmin
+gcloud projects add-iam-policy-binding PROJECT_ID \
+--member=serviceAccount:SERVICE_ACCOUNT \
+--role=roles/compute.instanceAdmin
 ```
 
-Grants VM management permissions to the service account.
-
----
-
-## Create VM with Service Account
-
-```bash
-gcloud compute instances create lab-3 --service-account SERVICE_ACCOUNT --scopes https://www.googleapis.com/auth/compute
-```
-
-Creates a VM attached to a service account.
+Allows the service account to manage virtual machines.
 
 ---
 
-## SSH into VM
+## Validation
+
+### Create VM Using Assigned Permissions
 
 ```bash
-gcloud compute ssh lab-3 --zone us-east1-a
+gcloud compute instances create lab-4 \
+--zone us-east1-d \
+--machine-type=e2-standard-2
 ```
 
-Connects to a Compute Engine VM using SSH.
+Validates successful permission assignment.
 
----
-
-## Create VM using Service Account Permissions
+### List IAM Policy Bindings
 
 ```bash
-gcloud compute instances create lab-4 --zone us-east1-d --machine-type=e2-standard-2
+gcloud projects get-iam-policy PROJECT_ID
 ```
 
-Creates a VM using the attached service account permissions.
-````
+Verifies IAM role assignments.
+
+```
+```
